@@ -15,22 +15,23 @@ import {
   setAuthToken,
 } from "./cookies"
 
-export const retrieveCustomer =
-  async (): Promise<HttpTypes.StoreCustomer | null> => {
-    const authHeaders = await getAuthHeaders()
+export const retrieveCustomer = async (): Promise<HttpTypes.StoreCustomer | null> => {
+  try {
+    const authHeaders = await getAuthHeaders();
 
-    if (!authHeaders) return null
+    if (!authHeaders || Object.keys(authHeaders).length === 0) return null;
 
     const headers = {
       ...authHeaders,
-    }
+    };
 
     const next = {
       ...(await getCacheOptions("customers")),
-    }
+    };
 
-    return await sdk.client
-      .fetch<{ customer: HttpTypes.StoreCustomer }>(`/store/customers/me`, {
+    const response = await sdk.client.fetch<{ customer: HttpTypes.StoreCustomer }>(
+      `/store/customers/me`,
+      {
         method: "GET",
         query: {
           fields: "*orders",
@@ -38,10 +39,15 @@ export const retrieveCustomer =
         headers,
         next,
         cache: "no-cache",
-      })
-      .then(({ customer }) => customer)
-      .catch(() => null)
+      }
+    );
+
+    return response.customer;
+  } catch (error) {
+    console.error('Error retrieving customer:', error);
+    return null;
   }
+}
 
 export const updateCustomer = async (body: HttpTypes.StoreUpdateCustomer) => {
   const headers = {

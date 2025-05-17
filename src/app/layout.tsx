@@ -36,14 +36,12 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>
 }>) {
   const messages = await getMessages()
-
   const { locale } = await params
+
   return (
-    <html lang={locale} className="">
+    <html lang={locale}>
       <NextIntlClientProvider messages={messages}>
-        <body
-          className={`${funnelDisplay.className} antialiased bg-primary text-secondary`}
-        >
+        <body className={`${funnelDisplay.className} antialiased bg-primary text-secondary`}>
           {children}
         </body>
       </NextIntlClientProvider>

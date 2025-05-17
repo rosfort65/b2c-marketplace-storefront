@@ -1,14 +1,15 @@
-import { defineRouting } from "next-intl/routing"
-import { createNavigation } from "next-intl/navigation"
+import { createLocalizedPathnamesNavigation } from 'next-intl/navigation';
 
-const region = process.env.NEXT_PUBLIC_DEFAULT_REGION || "pl"
-export const routing = defineRouting({
-  locales: [region, "gb"],
-  defaultLocale: region,
-  localeDetection: false,
-  alternateLinks: false,
-  localePrefix: "never", // Comment this line to show locale in pathname
-})
+export const locales = [process.env.NEXT_PUBLIC_DEFAULT_REGION || 'gb'];
+export const defaultLocale = process.env.NEXT_PUBLIC_DEFAULT_REGION || 'gb';
 
-export const { Link, redirect, usePathname, useRouter } =
-  createNavigation(routing)
+export const routing = {
+  locales,
+  defaultLocale,
+  localePrefix: 'never',
+};
+
+export const { Link, redirect, usePathname, useRouter } = createLocalizedPathnamesNavigation({
+  locales,
+  localePrefix: 'never',
+});
